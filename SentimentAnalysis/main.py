@@ -30,7 +30,7 @@ prompt = PromptTemplate(
     ),
 )
 
-chain = prompt | llm  # LCEL RunnableSequence
+chain = prompt | llm
 
 def analyze_sentiment(text: str) -> str:
     result = chain.invoke({"text": text})
