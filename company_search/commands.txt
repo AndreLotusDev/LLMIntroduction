@@ -1,0 +1,15 @@
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+uv --version
+
+uv tool install crewai-cli
+
+crewai --version
+
+crewai create crew project_name
+
+cd project_name
+
+crewai install
+
+crewai run
