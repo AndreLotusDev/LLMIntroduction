@@ -2,8 +2,6 @@
 import sys
 import warnings
 
-from datetime import datetime
-
 from company_search.crew import CompanySearch
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
@@ -11,62 +9,50 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 def run():
     """
-    Run the crew.
+    Run the crew interactively, asking the user for a company name.
     """
+    company_name = input("Enter the company name to research: ").strip()
+    if not company_name:
+        raise ValueError("Company name cannot be empty.")
+
     inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+        'company_name': company_name,
     }
 
     try:
-        CompanySearch().crew().kickoff(inputs=inputs)
+        result = CompanySearch().crew().kickoff(inputs=inputs)
+        print("\n" + "="*60)
+        print("SUMMARY")
+        print("="*60)
+        print(result)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
 
 def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        'current_year': str(datetime.now().year)
-    }
+    inputs = {"company_name": sys.argv[3] if len(sys.argv) > 3 else "Tesla"}
     try:
         CompanySearch().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
-
     except Exception as e:
         raise Exception(f"An error occurred while training the crew: {e}")
 
+
 def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
     try:
         CompanySearch().crew().replay(task_id=sys.argv[1])
-
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
 
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
-    }
 
+def test():
+    inputs = {"company_name": sys.argv[3] if len(sys.argv) > 3 else "Tesla"}
     try:
         CompanySearch().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
-
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
 
+
 def run_with_trigger():
-    """
-    Run the crew with trigger payload.
-    """
     import json
 
     if len(sys.argv) < 2:
@@ -79,8 +65,7 @@ def run_with_trigger():
 
     inputs = {
         "crewai_trigger_payload": trigger_payload,
-        "topic": "",
-        "current_year": ""
+        "company_name": trigger_payload.get("company_name", ""),
     }
 
     try:

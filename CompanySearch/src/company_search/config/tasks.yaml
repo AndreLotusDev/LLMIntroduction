@@ -1,17 +1,36 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    Search the internet for information about the company "{company_name}".
+    Your goal is to gather:
+    1. What the company does — business model, main products or services, industry sector.
+    2. Key facts — founding year, headquarters, size, or notable milestones.
+    3. Latest news — at least 3 to 5 recent news items from the past few weeks or months,
+       including dates and sources whenever possible.
+    Use multiple searches to cover both the company overview and recent developments.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    A structured report with two clearly labeled sections:
+    - "Company Overview": what {company_name} does, their business model, and key facts.
+    - "Latest News": 3 to 5 recent news items with dates and brief descriptions.
+  agent: company_researcher
 
-reporting_task:
+summary_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Using the research provided about "{company_name}", write a short and clear summary
+    with exactly two parts:
+    1. A 2-3 sentence description of what the company does.
+    2. A bullet-point list of the 3-5 most recent and relevant news items.
+    Be concise. This summary should be readable in under one minute.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A brief summary formatted as markdown:
+
+    **About {company_name}**
+    2-3 sentences describing what the company does.
+
+    **Latest News**
+    - [Date] News item 1
+    - [Date] News item 2
+    - [Date] News item 3
+  agent: company_summarizer
+  context:
+    - research_task
+  output_file: summary.md
