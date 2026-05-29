@@ -1,0 +1,38 @@
+{
+  "company_name": "Núclea",
+  "about": "Núclea is a Brazilian financial market infrastructure and data/technology company. It was formerly known as CIP (Câmara Interbancária de Pagamentos) and has evolved from a core interbank clearing/settlement utility into a broader provider of digital infrastructure, registries, data products, and open finance solutions for the financial ecosystem. In practice, Núclea functions as a B2B infrastructure provider: it connects banks, fintechs, insurers, and market participants through shared rails and compliance-grade systems, then layers higher-value data and software solutions on top.",
+  "news": [
+    {
+      "date": "2024-04-12",
+      "headline": "Dimensa and Núclea launched CredMap for faster credit analysis",
+      "description": "Núclea and Dimensa announced a partnership to launch CredMap, a solution aimed at making credit analysis more agile. This fits Núclea’s strategy of expanding from core infrastructure into data and credit intelligence products.",
+      "source": "Núclea na Mídia (Investor Relations/media page) https://ri.nuclea.com.br/informacoes-aos-investidores/nuclea-na-midia/"
+    },
+    {
+      "date": "Recent item listed on Núclea’s media page; exact date not visible in the search snippet",
+      "headline": "Núclea highlighted a stronger push toward a complete credit solution",
+      "description": "One of the featured media items on the company’s IR/media page says “Núclea foca em solução completa para ...” (focused on a complete solution for credit/market needs). While the full title was truncated in search, the context indicates continued investment in end-to-end credit and data solutions.",
+      "source": "Núclea na Mídia https://ri.nuclea.com.br/informacoes-aos-investidores/nuclea-na-midia/"
+    },
+    {
+      "date": "Recent item listed on Núclea’s media page; exact date not visible in the search snippet",
+      "headline": "Núclea discussed the future of Brazil’s digital financial infrastructure",
+      "description": "A media item titled “Infraestrutura digital e o futuro do mercado financeiro brasileiro” appeared on the company’s IR/media page. The topic aligns with Núclea’s role in modernizing rails for payments, registries, Open Finance, and possibly tokenized/digital finance.",
+      "source": "Núclea na Mídia https://ri.nuclea.com.br/informacoes-aos-investidores/nuclea-na-midia/"
+    },
+    {
+      "date": "Article available via Núclea RI/news search result; publication date should be confirmed on page",
+      "headline": "Núclea created a token-focused business area aimed at scale for the digital real ecosystem",
+      "description": "A company-linked article states “Núclea cria área de 'token' com foco em escala no real digital”. This indicates Núclea is building capabilities for tokenization and digital asset infrastructure, potentially linked to Brazil’s evolving central bank digital finance initiatives.",
+      "source": "Núclea RI / news https://ri.nuclea.com.br/noticias/nuclea-cria-area-de-token-com-foco-em-escala-no-real-digital/"
+    },
+    {
+      "date": "2024 article discussing 2023 results",
+      "headline": "Núclea (ex-CIP) reported strong 2023 profit and large dividend payout",
+      "description": "A company-linked report said Núclea (ex-CIP) posted net income of R$ 586 million in 2023 and paid R$ 1 billion in dividends to shareholders. This demonstrates strong profitability of its infrastructure-heavy business and financial capacity to invest in new products.",
+      "source": "Núclea RI / news https://ri.nuclea.com.br/noticias/nuclea-ex-cip-tem-lucro-de-r-586-mi-em-2023-e-paga-dividendos-de-r-1-bi-a-socios/"
+    }
+  ],
+  "searched_at": "2026-05-28T23:02:58.202409",
+  "folder": "núclea_2026-05-28"
+}

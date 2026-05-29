@@ -13,3 +13,7 @@ cd project_name
 crewai install
 
 crewai run
+
+============================
+
+uv run uvicorn company_search.api:app --host 0.0.0.0 --port 8000

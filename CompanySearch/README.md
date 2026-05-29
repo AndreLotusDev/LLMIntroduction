@@ -248,3 +248,43 @@ CompanySearch/
 |----------------|-----------|-----------------------------------|
 | `crewai`       | 1.14.5a2+ | Framework multi-agente            |
 | `crewai-tools` | incluído  | Ferramentas prontas (SerperDevTool, etc.) |
+| `litellm`      | incluído via `crewai[litellm]` | Camada de roteamento para Azure OpenAI |
+
+---
+
+## Configuração do LLM com Azure (`cognitiveservices.azure.com`)
+
+### O problema
+
+O CrewAI tem dois modos de chamar a Azure:
+
+| Modo | SDK usado | Caminho da requisição |
+|------|-----------|----------------------|
+| Provider nativo (`azure/`) | `azure-ai-inference` | `/models/<deployment>/chat/completions` |
+| LiteLLM (`is_litellm=True`) | `openai` (com config Azure) | `/openai/deployments/<deployment>/chat/completions` |
+
+Recursos do tipo `cognitiveservices.azure.com` servem modelos Azure OpenAI pelo caminho `/openai/deployments/`. O provider nativo do CrewAI usa o caminho `/models/`, que é exclusivo de endpoints serverless do Azure AI Foundry. Com a configuração padrão (`MODEL=azure/gpt-5.4`), o CrewAI instanciava o provider nativo e as chamadas retornavam `404 Resource not found`.
+
+### A correção em `crew.py`
+
+O LLM é instanciado explicitamente com `is_litellm=True`, forçando o roteamento pelo LiteLLM → SDK do OpenAI → caminho correto:
+
+```python
+_llm = LLM(
+    model=os.environ["MODEL"],
+    is_litellm=True,
+    api_base=os.environ["AZURE_API_BASE"],
+    api_key=os.environ["AZURE_API_KEY"],
+    api_version=os.environ["AZURE_API_VERSION"],
+)
+```
+
+Esse objeto é passado explicitamente para cada agente via `llm=_llm`. Sem isso, o CrewAI leria o `MODEL` do ambiente e escolheria o provider nativo automaticamente.
+
+### Dependência adicional
+
+O LiteLLM não vem instalado por padrão. Execute uma vez:
+
+```bash
+uv add 'crewai[litellm]'
+```

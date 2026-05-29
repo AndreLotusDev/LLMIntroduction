@@ -6,6 +6,9 @@ authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
     "crewai[azure-ai-inference,tools]>=1.14.4",
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.29.0",
+    "reportlab>=4.2.0",
 ]
 
 [project.scripts]
@@ -15,6 +18,7 @@ train = "company_search.main:train"
 replay = "company_search.main:replay"
 test = "company_search.main:test"
 run_with_trigger = "company_search.main:run_with_trigger"
+start_ui = "company_search.api:main"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,0 +1,38 @@
+{
+  "company_name": "CFP Energy",
+  "about": "CFP Energy is a London-headquartered energy and environmental markets specialist focused on helping corporate and industrial clients manage the transition to a lower-carbon economy. It provides energy and environmental solutions across carbon markets, emissions compliance, renewable and environmental certificates, energy procurement, risk management, and aviation decarbonisation. The company operates primarily as a specialist advisory, brokerage/trading, and market-solutions provider, helping clients buy, sell, hedge, and manage exposure to environmental and energy products across UK and EU markets.",
+  "news": [
+    {
+      "date": "March 3, 2025",
+      "headline": "CFP Energy expands leadership team and appoints Jarek Kozlowski as CFO",
+      "description": "CFP Energy announced an expansion of its leadership team and the appointment of Jarek Kozlowski as Chief Financial Officer. The move was presented as part of the company’s next growth phase and broader expansion strategy.",
+      "source": "https://www.cfp.energy/en/insights/tag/news"
+    },
+    {
+      "date": "2025",
+      "headline": "CFP Energy completes Sustainable Aviation Fuel certificate transaction for a corporate client",
+      "description": "CFP Energy said it completed a Sustainable Aviation Fuel certificate (SAFc) transaction enabling a global corporate to participate in aviation decarbonisation through certificate-based market mechanisms. This highlights CFP Energy’s role beyond traditional carbon compliance and into aviation sustainability and emerging SAF-related environmental instruments.",
+      "source": "https://www.cfp.energy/en/insights/cfp-energy-enables-corporate-investment-for-sustainable-aviation-fuel-through-saf-certificate-transaction"
+    },
+    {
+      "date": "May 15, 2026",
+      "headline": "CFP Energy executes first-ever ETS2 trade with FairEnergie",
+      "description": "CFP Energy announced the first ETS2 trade involving an end client, completed with German utility FairEnergie. Early participation positions CFP Energy as an active intermediary in the upcoming extension of the EU carbon market framework.",
+      "source": "https://www.cfp.energy/en/insights"
+    },
+    {
+      "date": "2025",
+      "headline": "CFP Energy involved in first EU ETS2 futures trade on EEX",
+      "description": "CFP Energy was named in coverage of the first trade under the new EU ETS2 futures framework on the European Energy Exchange. The development reinforces the firm’s position in new carbon pricing instruments and its role in helping clients hedge future regulatory costs.",
+      "source": "https://carbonherald.com/cfp-energy-executes-first-ever-eu-ets2-futures-trade-ushering-in-early-carbon-hedging/"
+    },
+    {
+      "date": "2025",
+      "headline": "CFP Energy highlights grid flexibility challenges after Spain blackout",
+      "description": "CFP Energy published commentary following Spain’s blackout, arguing that Europe urgently needs more flexibility solutions as renewable penetration grows. The piece reflects the company’s positioning as a thought leader on the operational and commercial challenges of the energy transition.",
+      "source": "https://www.cfp.energy/en/insights/spains-blackout-exposes-a-deeper-european-challenge"
+    }
+  ],
+  "searched_at": "2026-05-28T23:00:05.407869",
+  "folder": "cfp_energy_2026-05-28"
+}

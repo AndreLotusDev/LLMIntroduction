@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CompanySearch</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #2563eb;
+      --blue-dk: #1e40af;
+      --blue-lt: #eff6ff;
+      --slate:   #64748b;
+      --slate-lt:#f8fafc;
+      --border:  #e2e8f0;
+      --text:    #1e293b;
+      --radius:  10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--slate-lt);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--blue-dk);
+      color: #fff;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    header svg { flex-shrink: 0; }
+    header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -.02em; }
+    header p  { font-size: .8rem; opacity: .75; margin-top: 1px; }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      width: 260px;
+      min-width: 260px;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sidebar-title {
+      padding: 16px 18px 10px;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--slate);
+      border-bottom: 1px solid var(--border);
+    }
+    .history-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+    .history-empty {
+      padding: 24px 18px;
+      font-size: .85rem;
+      color: var(--slate);
+      text-align: center;
+    }
+    .history-item {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .history-item:hover { background: var(--blue-lt); }
+    .history-item.active { background: var(--blue-lt); border-left: 3px solid var(--blue); }
+    .history-item .co-name {
+      font-size: .88rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .history-item .co-meta {
+      font-size: .75rem;
+      color: var(--slate);
+      margin-top: 2px;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Search bar ── */
+    .search-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .search-card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--blue-dk);
+    }
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+    .search-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-row input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+    .search-row button {
+      padding: 10px 22px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .search-row button:hover:not(:disabled) { background: var(--blue-dk); }
+    .search-row button:disabled { opacity: .55; cursor: not-allowed; }
+
+    /* ── Loading ── */
+    .loading {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 24px 28px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .loading.visible { display: flex; }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text .title { font-weight: 600; font-size: .95rem; }
+    .loading-text .sub   { font-size: .82rem; color: var(--slate); margin-top: 2px; }
+
+    /* ── Results ── */
+    .results { display: none; flex-direction: column; gap: 16px; }
+    .results.visible { display: flex; }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .result-header h2 { font-size: 1.3rem; font-weight: 700; color: var(--blue-dk); }
+    .result-header .meta { font-size: .8rem; color: var(--slate); }
+
+    .btn-pdf {
+      padding: 8px 16px;
+      background: #fff;
+      color: var(--blue);
+      border: 1.5px solid var(--blue);
+      border-radius: 7px;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-pdf:hover { background: var(--blue); color: #fff; }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .card-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--slate);
+      margin-bottom: 10px;
+    }
+    .about-text { font-size: .93rem; line-height: 1.65; }
+
+    .news-grid { display: flex; flex-direction: column; gap: 14px; }
+    .news-item {
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--slate-lt);
+      transition: box-shadow .15s;
+    }
+    .news-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .news-date {
+      font-size: .75rem;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .news-headline {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+    .news-desc {
+      font-size: .85rem;
+      color: #334155;
+      line-height: 1.55;
+    }
+    .news-source {
+      font-size: .75rem;
+      color: var(--slate);
+      margin-top: 6px;
+    }
+    .news-source a { color: inherit; text-decoration: underline; }
+
+    /* ── Error ── */
+    .error {
+      display: none;
+      padding: 16px 20px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius);
+      color: #991b1b;
+      font-size: .9rem;
+    }
+    .error.visible { display: block; }
+
+    @media (max-width: 700px) {
+      aside { display: none; }
+      main  { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+  <div>
+    <h1>CompanySearch</h1>
+    <p>AI-powered company intelligence</p>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- Sidebar: history -->
+  <aside>
+    <div class="sidebar-title">Past searches</div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty" id="historyEmpty">No searches yet.</div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main>
+
+    <!-- Search -->
+    <div class="search-card">
+      <h2>Research a company</h2>
+      <div class="search-row">
+        <input id="searchInput" type="text" placeholder="e.g. Tesla, CFP Energy, Apple…" autocomplete="off" />
+        <button id="searchBtn" onclick="startSearch()">Search</button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">
+        <div class="title">Researching <span id="loadingCompany"></span>…</div>
+        <div class="sub">The AI agents are gathering and summarising information. This may take 30–90 seconds.</div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error" id="errorBox"></div>
+
+    <!-- Results -->
+    <div class="results" id="results">
+      <div class="result-header">
+        <div>
+          <h2 id="resultName"></h2>
+          <div class="meta" id="resultMeta"></div>
+        </div>
+        <button class="btn-pdf" id="pdfBtn" onclick="downloadPDF()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="11" x2="12" y2="17"/>
+            <polyline points="9 14 12 17 15 14"/>
+          </svg>
+          Export PDF
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">About</div>
+        <div class="about-text" id="resultAbout"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Latest News</div>
+        <div class="news-grid" id="resultNews"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  let currentFolder = null;
+  let pollTimer    = null;
+
+  // ── on load ──────────────────────────────────────────────
+  window.addEventListener("DOMContentLoaded", loadHistory);
+
+  document.getElementById("searchInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") startSearch();
+  });
+
+  // ── history ──────────────────────────────────────────────
+  async function loadHistory() {
+    try {
+      const res  = await fetch("/api/history");
+      const list = await res.json();
+      renderHistory(list);
+    } catch (_) {}
+  }
+
+  function renderHistory(list) {
+    const container = document.getElementById("historyList");
+    const empty     = document.getElementById("historyEmpty");
+    // clear existing items (keep empty placeholder)
+    [...container.querySelectorAll(".history-item")].forEach(el => el.remove());
+
+    if (!list || list.length === 0) {
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    list.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "history-item" + (item.folder === currentFolder ? " active" : "");
+      div.dataset.folder = item.folder;
+
+      const date = item.searched_at ? item.searched_at.slice(0, 10) : "";
+      div.innerHTML = `
+        <div class="co-name">${esc(item.company_name)}</div>
+        <div class="co-meta">${date} &middot; ${item.news_count} news items</div>
+      `;
+      div.addEventListener("click", () => loadHistoryItem(item.folder));
+      container.appendChild(div);
+    });
+  }
+
+  async function loadHistoryItem(folder) {
+    try {
+      const res  = await fetch(`/api/history/${folder}`);
+      const data = await res.json();
+      currentFolder = folder;
+      renderResults(data);
+      highlightActive();
+    } catch (e) {
+      showError("Failed to load past result: " + e.message);
+    }
+  }
+
+  // ── search ───────────────────────────────────────────────
+  async function startSearch() {
+    const input = document.getElementById("searchInput");
+    const name  = input.value.trim();
+    if (!name) return;
+
+    clearState();
+    show("loading");
+    document.getElementById("loadingCompany").textContent = name;
+    document.getElementById("searchBtn").disabled = true;
+
+    try {
+      const res  = await fetch("/api/search", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ company_name: name }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const { job_id } = await res.json();
+      pollJob(job_id);
+    } catch (e) {
+      hide("loading");
+      showError("Failed to start search: " + e.message);
+      document.getElementById("searchBtn").disabled = false;
+    }
+  }
+
+  function pollJob(jobId) {
+    pollTimer = setInterval(async () => {
+      try {
+        const res  = await fetch(`/api/search/${jobId}`);
+        const data = await res.json();
+
+        if (data.status === "done") {
+          clearInterval(pollTimer);
+          hide("loading");
+          document.getElementById("searchBtn").disabled = false;
+          currentFolder = data.folder;
+          renderResults(data.result);
+          await loadHistory();
+          highlightActive();
+        } else if (data.status === "error") {
+          clearInterval(pollTimer);
+          hide("loading");
+          document.getElementById("searchBtn").disabled = false;
+          showError("Search failed: " + data.error);
+        }
+      } catch (_) {}
+    }, 2500);
+  }
+
+  // ── render ───────────────────────────────────────────────
+  function renderResults(data) {
+    hide("errorBox");
+    document.getElementById("resultName").textContent = data.company_name || "";
+    const date = (data.searched_at || "").slice(0, 10);
+    document.getElementById("resultMeta").textContent = date ? `Researched on ${date}` : "";
+    document.getElementById("resultAbout").textContent = data.about || "";
+
+    const newsGrid = document.getElementById("resultNews");
+    newsGrid.innerHTML = "";
+    (data.news || []).forEach(item => {
+      const div = document.createElement("div");
+      div.className = "news-item";
+      const srcHtml = item.source
+        ? `<div class="news-source">Source: <a href="${esc(item.source)}" target="_blank" rel="noopener">${esc(item.source)}</a></div>`
+        : "";
+      div.innerHTML = `
+        <div class="news-date">${esc(item.date || "")}</div>
+        <div class="news-headline">${esc(item.headline || "")}</div>
+        <div class="news-desc">${esc(item.description || "")}</div>
+        ${srcHtml}
+      `;
+      newsGrid.appendChild(div);
+    });
+
+    show("results");
+  }
+
+  // ── PDF ──────────────────────────────────────────────────
+  function downloadPDF() {
+    if (!currentFolder) return;
+    window.open(`/api/history/${currentFolder}/pdf`, "_blank");
+  }
+
+  // ── helpers ──────────────────────────────────────────────
+  function clearState() {
+    hide("results");
+    hide("errorBox");
+    currentFolder = null;
+  }
+
+  function show(id) { document.getElementById(id).classList.add("visible"); }
+  function hide(id) { document.getElementById(id).classList.remove("visible"); }
+
+  function showError(msg) {
+    const box = document.getElementById("errorBox");
+    box.textContent = msg;
+    box.classList.add("visible");
+  }
+
+  function highlightActive() {
+    document.querySelectorAll(".history-item").forEach(el => {
+      el.classList.toggle("active", el.dataset.folder === currentFolder);
+    });
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+</script>
+</body>
+</html>

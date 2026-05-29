@@ -1,7 +1,18 @@
-from crewai import Agent, Crew, Process, Task
+import os
+
+from crewai import Agent, Crew, LLM, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai_tools import SerperDevTool
+
+from company_search.models import CompanyReport
+
+_llm = LLM(
+    model=os.environ["MODEL"],
+    api_base=os.environ["AZURE_API_BASE"],
+    api_key=os.environ["AZURE_API_KEY"],
+    api_version=os.environ["AZURE_API_VERSION"],
+)
 
 
 @CrewBase
@@ -16,6 +27,7 @@ class CompanySearch():
         return Agent(
             config=self.agents_config['company_researcher'],
             tools=[SerperDevTool()],
+            llm=_llm,
             verbose=True
         )
 
@@ -23,6 +35,7 @@ class CompanySearch():
     def company_summarizer(self) -> Agent:
         return Agent(
             config=self.agents_config['company_summarizer'],
+            llm=_llm,
             verbose=True
         )
 
@@ -36,6 +49,7 @@ class CompanySearch():
     def summary_task(self) -> Task:
         return Task(
             config=self.tasks_config['summary_task'],
+            output_pydantic=CompanyReport,
         )
 
     @crew

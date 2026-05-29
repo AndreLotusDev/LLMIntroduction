@@ -10,27 +10,35 @@ research_task:
   expected_output: >
     A structured report with two clearly labeled sections:
     - "Company Overview": what {company_name} does, their business model, and key facts.
-    - "Latest News": 3 to 5 recent news items with dates and brief descriptions.
+    - "Latest News": 3 to 5 recent news items with dates, brief descriptions, and sources.
   agent: company_researcher
 
 summary_task:
   description: >
-    Using the research provided about "{company_name}", write a short and clear summary
-    with exactly two parts:
-    1. A 2-3 sentence description of what the company does.
-    2. A bullet-point list of the 3-5 most recent and relevant news items.
-    Be concise. This summary should be readable in under one minute.
+    Using the research provided about "{company_name}", produce a structured JSON summary.
+    The JSON must have exactly these fields:
+    - company_name: the exact name of the company (string)
+    - about: 2-3 sentences describing what the company does, its business model, and key facts (string)
+    - news: an array of 3-5 news items, each with:
+        - date: the date of the news (string, e.g. "2025-01-15" or "January 2025")
+        - headline: a short, informative headline (string)
+        - description: 1-2 sentences summarising the news item (string)
+        - source: the publication or URL where the news was found (string, can be empty)
+    Output ONLY the raw JSON object — no markdown fences, no extra text.
   expected_output: >
-    A brief summary formatted as markdown:
-
-    **About {company_name}**
-    2-3 sentences describing what the company does.
-
-    **Latest News**
-    - [Date] News item 1
-    - [Date] News item 2
-    - [Date] News item 3
+    A valid JSON object matching this exact structure (no markdown, no code fences):
+    {
+      "company_name": "string",
+      "about": "2-3 sentence overview of the company",
+      "news": [
+        {
+          "date": "YYYY-MM-DD or descriptive date",
+          "headline": "short headline",
+          "description": "1-2 sentence description",
+          "source": "publication name or URL"
+        }
+      ]
+    }
   agent: company_summarizer
   context:
     - research_task
-  output_file: summary.md
