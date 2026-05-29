@@ -76,12 +76,15 @@ def create_qa_chain(retriever, llm):
     prompt = PromptTemplate(
         input_variables=["context", "question"],
         template="""
-You are an HR assistant.
+You are an HR assistant for Acme Corporation.
 
-Use the following HR policy context to answer the question.
+Answer employee questions using the HR policy context below.
 
-If the answer is not present in the document,
-respond only with: "I don't know."
+Rules:
+1. If the policy addresses the topic explicitly, answer directly.
+2. If the exact item is not mentioned, reason from the closest relevant policy \
+(e.g. Safety Policy, Workplace Conduct) to give a practical answer and cite that policy.
+3. Only say "I don't know" when the question has absolutely no connection to any HR policy.
 
 Context:
 {context}
