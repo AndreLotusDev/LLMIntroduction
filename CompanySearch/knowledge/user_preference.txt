@@ -1,4 +1,46 @@
-User name is John Doe.
-User is an AI Engineer.
-User is interested in AI Agents.
-User is based in San Francisco, California.
+## Project Context: CompanySearch
+
+This project is an AI-powered company research automation system built with CrewAI.
+It autonomously researches companies and generates structured intelligence reports.
+
+### Architecture
+- Framework: CrewAI (multi-agent orchestration)
+- LLM Backend: Azure AI Inference (configured via AZURE_API_BASE, AZURE_API_KEY, AZURE_API_VERSION, MODEL env vars)
+- Web Search: SerperDevTool for real-time search
+- API: FastAPI server on port 8000 with async job queue
+- PDF Reports: Generated on-demand via ReportLab
+- Frontend: Static HTML/JS SPA served from /frontend
+
+### Agents
+- Company Researcher: searches the web using SerperDevTool to gather company overview and 3-5+ recent news items
+- Company Summarizer: synthesizes research into a structured JSON report (CompanyReport Pydantic model)
+
+### Data Model
+CompanyReport:
+  - company_name: str
+  - about: str (business overview)
+  - news: list of NewsItem (title, summary, date, source)
+
+### API Endpoints
+- POST /api/search          — submit a company search (returns job_id)
+- GET  /api/search/{job_id} — poll job status and retrieve results
+- GET  /api/history         — list all past searches
+- GET  /api/history/{folder}       — retrieve a specific result JSON
+- GET  /api/history/{folder}/pdf   — download PDF report
+
+### CLI Entry Points (via uv run)
+- company_search / run_crew — interactive company search via terminal
+- start_ui                  — launch FastAPI server
+- train / replay / test     — crew training and evaluation modes
+
+### Key Files
+- src/company_search/crew.py       — agent and task definitions
+- src/company_search/main.py       — CLI entry point
+- src/company_search/api.py        — FastAPI server
+- src/company_search/models.py     — Pydantic data models
+- src/company_search/config/agents.yaml — agent role/goal/backstory
+- src/company_search/config/tasks.yaml  — task descriptions and expected outputs
+
+### Results Storage
+- Directory: results/{slugified_company_name}_{date}/result.json
+- Format: JSON matching CompanyReport schema
